@@ -22,19 +22,28 @@
                         
                         <div class="form-group">
                             <strong>No. de Expediente:</strong>
-                            {{ $expediente->noExpediente }}
+                            {{ $expedienteArray['noExpediente'] }}
                         </div>
                         <div class="form-group">
                             <strong>Paciente:</strong>
-                            {{ $expediente->user2->nombre.' '.$expediente->user2->apPaterno. ' '.$expediente->user2->apMaterno }}
+                            @foreach ($pacientesArray as $paciente)
+                                @if ($expedienteArray['idPaciente'] == $paciente['id'])
+                                    {{ $paciente['nombre'].' '.$paciente['apPaterno'].' '.$paciente['apMaterno'] }}
+                                @endif
+                            @endforeach
+                            
                         </div>
                         <div class="form-group">
                             <strong>Doctor(a):</strong>
-                            {{ $expediente->user->nombre.' '.$expediente->user->apPaterno. ' '.$expediente->user->apMaterno }}
+                            @foreach ($doctoresArray as $doctor)
+                                @if ($expedienteArray['idDoctor'] == $doctor['id'])
+                                    {{ $doctor['nombre'].' '.$doctor['apPaterno'].' '.$doctor['apMaterno'] }}
+                                @endif
+                            @endforeach
                         </div>
                         <div class="form-group">
                             <strong>Descripcion:</strong>
-                            {{ $expediente->descripcion }}
+                            {{ $expedienteArray['descripcion'] }}
                         </div>
 
                     </div>

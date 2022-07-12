@@ -35,7 +35,7 @@
                             <table class="table table-striped table-hover">
                                 <thead class="thead">
                                     <tr>
-                                        <th>#</th>
+                                        
                                         
 										<th>Ritmo Cardiaco</th>
 										<th>Calorias Quemadas</th>
@@ -47,23 +47,27 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($signosvitales as $signosvitale)
+                                    @foreach ($signosvitalesArray as $signosvitale)
                                         <tr>
-                                            <td>{{ ++$i }}</td>
                                             
-											<td>{{ $signosvitale->ritmoCardiaco }}</td>
-											<td>{{ $signosvitale->caloriasQuemadas }}</td>
-											<td>{{ $signosvitale->pasosDiarios }}</td>
-											<td>{{ $signosvitale->distanciaRecorrida }}</td>
-											<td>{{ $signosvitale->expediente->noExpediente }}</td>
-
+                                            
+											<td>{{ $signosvitale['ritmoCardiaco']}}</td>
+											<td>{{ $signosvitale['caloriasQuemadas'] }}</td>
+											<td>{{ $signosvitale['pasosDiarios'] }}</td>
+											<td>{{ $signosvitale['distanciaRecorrida'] }}</td>
+                                            @foreach ($expedientesArray as $expediente)
+                                                @if ($signosvitale['idExpediente'] == $expediente['id'])
+                                                    <td>{{ $expediente['noExpediente'] }}</td>
+                                                @endif
+                                            @endforeach
+                                            
+                                            
                                             <td>
-                                                <form action="{{ route('signosvitales.destroy',$signosvitale->id) }}" method="POST">
-                                                    <a class="btn btn-sm btn-primary" href="{{ route('signosvitales.show',$signosvitale->id) }}"><i class="fa fa-fw fa-eye"></i> Ver</a>
-                                                    <a class="btn btn-sm btn-success disabled" href="{{ route('signosvitales.edit',$signosvitale->id) }}"><i class="fa fa-fw fa-edit" role="button" aria-disabled="true"></i> Editar</a>
+                                                <form action="{{ route('signosvitales.destroy',$signosvitale['id']) }}" method="POST">
+                                                    <a class="btn btn-sm btn-primary" href="{{ route('signosvitales.show',$signosvitale['id']) }}"><i class="fa fa-fw fa-eye"></i> Ver</a>
+                                                    
                                                     @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm disabled"><i class="fa fa-fw fa-trash" role="button" aria-disabled="true"></i> Eliminar</button>
+                                                    
                                                 </form>
                                             </td>
                                         </tr>
@@ -73,7 +77,7 @@
                         </div>
                     </div>
                 
-                {!! $signosvitales->links() !!}
+                
             </div>
         </div>
     </div>

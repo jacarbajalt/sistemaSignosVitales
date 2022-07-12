@@ -27,4 +27,3 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::resource('/expedientes', ExpedienteController::class)->middleware('auth');
 Route::resource('/signosvitales', SignosvitaleController::class)->middleware('auth');
 Route::resource('/users', UserController::class);
-//Route::resource('/actualizar',  UserSettingsController::class)->middleware('auth');

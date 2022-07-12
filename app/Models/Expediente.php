@@ -61,7 +61,6 @@ class Expediente extends Model
     public function user2()
     {
         return $this->hasOne('App\Models\User', 'id', 'idPaciente');
-        
     }
     
     /**

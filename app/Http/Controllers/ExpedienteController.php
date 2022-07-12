@@ -6,6 +6,10 @@ use App\Models\Expediente;
 use App\Models\User;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Http;
+
+use GuzzleHttp\Client;
+
 /**
  * Class ExpedienteController
  * @package App\Http\Controllers
@@ -19,10 +23,17 @@ class ExpedienteController extends Controller
      */
     public function index()
     {
-        $expedientes = Expediente::paginate();
-
-        return view('expediente.index', compact('expedientes'))
-            ->with('i', (request()->input('page', 1) - 1) * $expedientes->perPage());
+        //Consumir WebService Rest de Expediente y mostrarlo en la vista
+        $expediente=HTTP::get('http://localhost:8000/api/expedientes');
+        $expedienteArray=$expediente->json();
+        //Consulta de la base de datos para obtener los usuarios donde el rol es 'paciente'
+        $pacientes=User::where('rol', 'Paciente')->get();
+        $pacientesArray=json_decode(json_encode($pacientes), true);
+        //Consulta en la base de datos para obtener los usuarios donde el rol es 'doctor'
+        $doctores=User::where('rol', 'Doctor(a)')->get();
+        $doctoresArray=json_decode(json_encode($doctores), true);
+        //Devuelve la vista con los datos obtenidos
+        return view('expediente.index', compact('expedienteArray', 'pacientesArray', 'doctoresArray'));
     }
 
     /**
@@ -46,12 +57,24 @@ class ExpedienteController extends Controller
      */
     public function store(Request $request)
     {
-        request()->validate(Expediente::$rules);
-
-        $expediente = Expediente::create($request->all());
-
+        //Consumir WebService Rest de Expediente
+        $client = new Client([
+            // Base URI is used with relative requests
+            'base_uri' => 'http://localhost:8000/api/',
+            // You can set any number of default request options.
+            'timeout'  => 2.0,
+        ]);
+        $response = $client->request('POST', 'expedientes', [
+            'form_params' => [
+                'noExpediente' => $request->noExpediente,
+                'idPaciente' => $request->idPaciente,
+                'idDoctor' => $request->idDoctor,
+                'descripcion' => $request->descripcion,
+            ]
+        ]);
+        //Mostrar mensaje de confirmación de creación de expediente
         return redirect()->route('expedientes.index')
-            ->with('success', 'Expediente created successfully.');
+            ->with('success', 'Expediente creado con éxito.');
     }
 
     /**
@@ -62,9 +85,17 @@ class ExpedienteController extends Controller
      */
     public function show($id)
     {
-        $expediente = Expediente::find($id);
-
-        return view('expediente.show', compact('expediente'));
+        //Consumir WebService Rest de Expediente
+        $expediente=HTTP::get('http://localhost:8000/api/expedientes/'.$id);
+        $expedienteArray=$expediente->json();
+        //Consulta de la base de datos para obtener los usuarios donde el rol es 'paciente'
+        $pacientes=User::where('rol', 'Paciente')->get();
+        $pacientesArray=json_decode(json_encode($pacientes), true);
+        //Consulta en la base de datos para obtener los usuarios donde el rol es 'doctor'
+        $doctores=User::where('rol', 'Doctor(a)')->get();
+        $doctoresArray=json_decode(json_encode($doctores), true);
+        //Devuelve la vista con los datos obtenidos
+        return view('expediente.show', compact('expedienteArray', 'pacientesArray', 'doctoresArray'));
     }
 
     /**
@@ -90,12 +121,24 @@ class ExpedienteController extends Controller
      */
     public function update(Request $request, Expediente $expediente)
     {
-        request()->validate(Expediente::$rules);
-
-        $expediente->update($request->all());
-
+        //Consumir WebService Rest de Expediente
+        $client = new Client([
+            // Base URI is used with relative requests
+            'base_uri' => 'http://localhost:8000/api/',
+            // You can set any number of default request options.
+            'timeout'  => 2.0,
+        ]);
+        $response = $client->request('PUT', 'expedientes/'.$expediente->id, [
+            'form_params' => [
+                'noExpediente' => $request->noExpediente,
+                'idPaciente' => $request->idPaciente,
+                'idDoctor' => $request->idDoctor,
+                'descripcion' => $request->descripcion,
+            ]
+        ]);
+        //Mostrar mensaje de confirmación de edición de expediente
         return redirect()->route('expedientes.index')
-            ->with('success', 'Expediente updated successfully');
+            ->with('success', 'Expediente actualizado con éxito.');
     }
 
     /**
@@ -105,9 +148,16 @@ class ExpedienteController extends Controller
      */
     public function destroy($id)
     {
-        $expediente = Expediente::find($id)->delete();
-
+        //Consumir WebService Rest de Expediente
+        $client = new Client([
+            // Base URI is used with relative requests
+            'base_uri' => 'http://localhost:8000/api/',
+            // You can set any number of default request options.
+            'timeout'  => 2.0,
+        ]);
+        $response = $client->request('DELETE', 'expedientes/'.$id);
+        //Mostrar mensaje de confirmación de eliminación de expediente
         return redirect()->route('expedientes.index')
-            ->with('success', 'Expediente deleted successfully');
+            ->with('success', 'Expediente eliminado con éxito.');
     }
 }

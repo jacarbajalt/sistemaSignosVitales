@@ -22,23 +22,28 @@
                         
                         <div class="form-group">
                             <strong>Ritmo Cardiaco:</strong>
-                            {{ $signosvitale->ritmoCardiaco }}
+                            {{ $signosvitalesArray['ritmoCardiaco'] }}
                         </div>
                         <div class="form-group">
                             <strong>Calorias Quemadas:</strong>
-                            {{ $signosvitale->caloriasQuemadas }}
+                            {{ $signosvitalesArray['caloriasQuemadas'] }}
                         </div>
                         <div class="form-group">
                             <strong>Pasos Diarios:</strong>
-                            {{ $signosvitale->pasosDiarios }}
+                            {{ $signosvitalesArray['pasosDiarios'] }}
                         </div>
                         <div class="form-group">
                             <strong>Distancia Recorrida:</strong>
-                            {{ $signosvitale->distanciaRecorrida }}
+                            {{ $signosvitalesArray['distanciaRecorrida'] }}
                         </div>
                         <div class="form-group">
                             <strong>Expediente:</strong>
-                            {{ $signosvitale->expediente->noExpediente }}
+                            
+                            @foreach ($expedientesArray as $expediente)
+                                @if ($signosvitalesArray['idExpediente'] == $expediente['id'])
+                                    {{ $expediente['noExpediente'] }}
+                                @endif
+                            @endforeach
                         </div>
 
                     </div>
